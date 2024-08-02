@@ -6,7 +6,7 @@ describe('Unit test for app handler', function () {
     it('verifies successful response', async () => {
         const event = {
             httpMethod: 'GET',
-            body: '{"productName": "leite", "userLatitude": -19.94371450344724, "userLongitude": -43.935641886994574, "maxDistance": 10}',
+            body: '{"productName": "BANANA PRATA ESP. kg", "userLatitude": -19.87811, "userLongitude": -43.99649, "maxDistance": 10}',
             headers: {},
             isBase64Encoded: false,
             multiValueHeaders: {},
