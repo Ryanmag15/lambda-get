@@ -15,28 +15,28 @@ export async function searchProduct(body) {
             `
             SELECT 
                 p.name AS product_name, 
-                s.name AS supermarket_name, 
-                s.address, 
-                ph.price, 
-                ph.date,
+                s.company_name AS supermarket_name, 
+                s.address_street || ', ' || s.address_number || ', ' || s.address_neighborhood || ', ' || s.address_city || ', ' || s.address_state AS address, 
+                pp.price, 
+                pp.date,
                 (6371 * acos( 
-                    cos(radians($1)) * cos(radians(s.latitude)) * 
-                    cos(radians(s.longitude) - radians($2)) + 
-                    sin(radians($1)) * sin(radians(s.latitude))
+                    cos(radians($1)) * cos(radians(s.address_lat)) * 
+                    cos(radians(s.address_lng) - radians($2)) + 
+                    sin(radians($1)) * sin(radians(s.address_lat))
                 )) AS distance
             FROM 
                 supermarkets AS s
             INNER JOIN 
-                price_history AS ph ON s.cnpj = ph.supermarket_id
+                products AS p ON s.id = p.supermarket_id
             INNER JOIN 
-                products AS p ON ph.product_id = p.code
+                productprices AS pp ON p.id = pp.product_id
             WHERE 
                 p.name ILIKE '%' || $3 || '%'
             AND
                 (6371 * acos( 
-                    cos(radians($1)) * cos(radians(s.latitude)) * 
-                    cos(radians(s.longitude) - radians($2)) + 
-                    sin(radians($1)) * sin(radians(s.latitude))
+                    cos(radians($1)) * cos(radians(s.address_lat)) * 
+                    cos(radians(s.address_lng) - radians($2)) + 
+                    sin(radians($1)) * sin(radians(s.address_lat))
                 )) < $4;
             `,
             [body.userLatitude, body.userLongitude, body.productName, body.maxDistance]
